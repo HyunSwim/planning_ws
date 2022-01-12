@@ -20,7 +20,7 @@ class PurePursuit:
         if self.state.mode == "driving":
             lookahead = min(self.k * self.state.speed + self.lookahead_default, 6) # look-ahead
         else :
-            lookahead = 0.5
+            lookahead = 1.8
             
         target_index = int(self.state.index + lookahead*10)
         target_x, target_y = path.x[target_index], path.y[target_index]

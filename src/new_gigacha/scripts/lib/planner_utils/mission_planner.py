@@ -55,8 +55,10 @@ class MissionPlanner:
                 self.ego.mode = "backward"
                 self.aft_time = -1
 
+            dist3 = hypot(self.ego.pose.x - self.ego.global_path.x[1225], \
+                        self.ego.pose.y - self.ego.global_path.y[1225]  )
             
-            if dist1 < 1.5 and self.ego.status == "parking backward" and self.aft_time < 0 :
+            if dist3 < 3.0 and self.ego.status == "parking backward" and self.aft_time < 0 :
                 self.ego.status = "parking end"
                 self.ego.mode = "emergency_stop"
                 self.aft_time = time()

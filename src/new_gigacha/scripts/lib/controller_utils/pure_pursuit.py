@@ -9,7 +9,6 @@ class PurePursuit:
         self.state = state
         self.global_path = global_path
         self.local_path = local_path
-        ddd
 
     def run(self):
        

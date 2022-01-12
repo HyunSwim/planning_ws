@@ -17,17 +17,18 @@ class MissionPlanner:
         # if self.ego.mission == "Init":
         #     self.ego.mission = "parking"
 
-        if self.ego.status is "Ready":
-            self.ego.mission = self.ego.local_path[self.ego.index]
+        if self.ego.status == "Ready":
+            # self.ego.global_path = self.ego.local_path
+            # self.ego.mission = self.ego.local_path[self.ego.index]
             self.ego.mission = "parking"
 
 
         print(f"status: {self.ego.status}\n, mode:{self.ego.mode}")
         if self.ego.mission == "parking":
-            dist1 = hypot(self.ego.pose.x - self.ego.global_path.x[990], \
-                        self.ego.pose.y - self.ego.global_path.y[990]  )
-            # dist1 = hypot(self.ego.pose.x - self.ego.global_path.x[0], \
-            #     self.ego.pose.y - self.ego.global_path.y[0]  )
+            dist1 = hypot(self.ego.pose.x - self.ego.local_path.x[0], \
+                        self.ego.pose.y - self.ego.local_path.y[1]  )
+            # dist1 = hypot(self.ego.pose.x - self.ego.local_path.x[0], \
+            #     self.ego.pose.y - self.ego.local_path.y[0]  )
             print(f"dist1: {dist1}")
             
             
@@ -42,8 +43,8 @@ class MissionPlanner:
                 self.check = 1
                 
         
-            dist2 = hypot(self.ego.pose.x - self.ego.global_path.x[1113], \
-                        self.ego.pose.y - self.ego.global_path.y[1113]  )
+            dist2 = hypot(self.ego.pose.x - self.ego.local_path.x[124], \
+                        self.ego.pose.y - self.ego.local_path.y[124]  )
             print(f"dist2: {dist2}")
 
             
@@ -73,11 +74,7 @@ class MissionPlanner:
                 self.ego.mission = "gogo"
 
             
-            
-
-            
         
-
         # #Mode Decision
         # if self.ego.state is not "Ready":
 

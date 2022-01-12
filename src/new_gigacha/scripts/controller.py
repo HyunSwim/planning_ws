@@ -22,7 +22,7 @@ class Controller:
 
         self.state = State()
         self.global_path = read_global_path('songdo', 'global_simul')
-        self.local_path = read_global_path('songdo', 'parking_only_simul')
+        self.parking_path = read_global_path('songdo', 'parking_only_simul')
         # self.local_path = Path()
         
         self.update_state = stateUpdater(self.state)
@@ -32,7 +32,7 @@ class Controller:
 
         
 
-        self.lat_controller= PurePursuit(self.state, self.global_path, self.local_path) 
+        self.lat_controller= PurePursuit(self.state, self.global_path, self.parking_path) 
         # self.lat_controller= Stanley_Method(self.state, self.global_path, self.local_path)
         # self.lat_controller= Combined_Method(self.state, self.global_path, self.local_path)
         # self.curve_check = min(max (self.lat_controller.deaccel(), -27), 27)

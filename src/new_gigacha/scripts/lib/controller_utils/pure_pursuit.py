@@ -1,14 +1,14 @@
 from math import hypot, cos, sin, degrees, atan2, radians, pi
 
 class PurePursuit:
-    def __init__(self, state, global_path, local_path):
+    def __init__(self, state, global_path, parking_path):
         self.WB = 1.04 # wheel base
         self.k = 0.3 #1.5
         self.lookahead_default = 4.0 #look-ahead default
 
         self.state = state
         self.global_path = global_path
-        self.local_path = local_path
+        self.local_path = parking_path
 
     def run(self):
        
@@ -52,7 +52,8 @@ class PurePursuit:
     
     def deaccel(self):
         
-        if self.state.mode == "local path tracking":
+        # if self.state.mode == "local path tracking":
+        if self.state.mode == "parking":
             path = self.local_path
         else:
             path = self.global_path

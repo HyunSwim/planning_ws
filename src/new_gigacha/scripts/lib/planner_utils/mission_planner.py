@@ -14,11 +14,11 @@ class MissionPlanner:
             # self.ego.mission=self.ego.global_path.mission[self.ego.index]
             # self.ego.mode = "small"
 
-
         # if self.ego.mission == "Init":
         #     self.ego.mission = "parking"
 
-        if self.ego.
+        if self.ego.status is "Ready":
+            self.ego.mission = self.ego.local_path[self.ego.index]
             self.ego.mission = "parking"
 
 

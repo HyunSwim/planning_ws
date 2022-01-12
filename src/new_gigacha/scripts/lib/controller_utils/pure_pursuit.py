@@ -12,15 +12,20 @@ class PurePursuit:
 
     def run(self):
        
-        if self.state.mode == "local path tracking":
+        # if self.state.mode == "local path tracking":
+        #     path = self.local_path
+        # else:
+        #     path = self.global_path
+
+        if self.state.mode == "parking":
             path = self.local_path
         else:
             path = self.global_path
 
         if self.state.mode == "driving":
             lookahead = min(self.k * self.state.speed + self.lookahead_default, 6) # look-ahead
-        else :
-            lookahead = 0.5
+        else:
+            lookahead = 1.0
             
         target_index = int(self.state.index + lookahead*10)
         target_x, target_y = path.x[target_index], path.y[target_index]

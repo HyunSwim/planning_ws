@@ -19,7 +19,7 @@ class environmentVisualizer:
 
         self.vis_trajectory_pub = rospy.Publisher("/vis_trajectory", PointCloud, queue_size=1)
 
-        global_path = read_global_path('songdo', 'parking_simul')
+        global_path = read_global_path('songdo', 'global_simul')
         for i in range(len(global_path.x)):
             self.vis_global_path_msg.points.append(Point32(global_path.x[i], global_path.y[i], 0))
 

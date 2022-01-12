@@ -15,8 +15,12 @@ class MissionPlanner:
             # self.ego.mode = "small"
 
 
-        if self.ego.mission == "Init":
+        # if self.ego.mission == "Init":
+        #     self.ego.mission = "parking"
+
+        if self.ego.
             self.ego.mission = "parking"
+
 
         print(f"status: {self.ego.status}\n, mode:{self.ego.mode}")
         if self.ego.mission == "parking":

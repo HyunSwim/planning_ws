@@ -40,7 +40,7 @@ class Planner:
         # print(self.ego.obs_map)
         self.whereami.run()
         self.mission_planner.run()
-        self.path_planner.run()
+        #self.path_planner.run()
 
 
         self.publish_planning_info()

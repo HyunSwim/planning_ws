@@ -13,8 +13,9 @@ class IndexFinder:
 
         if self.ego.mission == "Init":
             self.path = self.ego.global_path
-        # elif self.ego.mission == "parking":
-        #     self.path = self.ego.local_path
+            
+        elif self.ego.mission == "parking":
+            self.path = self.ego.local_path
 
         print(f"Path length: {len(self.path.x)}")
         step_size = 100

@@ -20,9 +20,16 @@ class MissionPlanner:
         if self.ego.status == "Ready":
             # self.ego.global_path = self.ego.local_path
             # self.ego.mission = self.ego.local_path[self.ego.index]
-            self.ego.mission = "parking"
+        
+            dist = hypot(self.ego.x - adsf, self.ego.y - asdfsadf)
+
+            if dist < 1:
+                self.ego.mission = "parking"
+        
 
 
+
+        #For parking
         print(f"status: {self.ego.status}\n, mode:{self.ego.mode}")
         if self.ego.mission == "parking":
             dist1 = hypot(self.ego.pose.x - self.ego.local_path.x[0], \

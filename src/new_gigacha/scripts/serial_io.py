@@ -71,7 +71,7 @@ class Serial_IO:
                     self.serial_msg.brake = struct.unpack("B", packet[10:11])[0]
 
                     #encoder -- not working
-                    # self.serial_msg.encoder = struct.unpack("f", packet[11:15])
+                    # self.serial_msg.encoder  struct.unpack("f", packet[11:15])
                     self.serial_msg.encoder = -1
 
                     #alive (heartbeat)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 # date : 0703
-
+#d
 from __future__ import division, print_function #파이썬3문법을 2에서도 쓸수있게해줌
 import serial
 import rospy

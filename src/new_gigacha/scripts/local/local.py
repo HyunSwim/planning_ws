@@ -20,6 +20,7 @@ from sensor_msgs.msg import PointCloud
 from geometry_msgs.msg import Point32
 from scipy.linalg import block_diag
 import pymap3d as pm
+from new_gigacha.msg import Local
 import time as t
 from filterpy.kalman import KalmanFilter
 from scipy.linalg import block_diag
@@ -30,7 +31,7 @@ from std_msgs.msg import Int64,Float32
 
 # define
 magnet_OFF = [0, 0, 0]
-PI = 3.141592
+PI = math.pi
 
 # ENU base coordinates
 # 송도
@@ -42,19 +43,19 @@ base_alt = 15.4
 class Localization():
     def __init__(self):
         rospy.init_node('Position_Node', anonymous=False)
-        self.pub = rospy.Publisher('/pose', Odometry, queue_size = 1)
+        self.pub = rospy.Publisher('/pose', Local, queue_size = 1)
 
-        self.msg = Odometry()
+        self.msg = Local()
 
 
-        self.e_gps = None
-        self.n_gps = None
+        self.e_gps = 0
+        self.n_gps = 0
         self.u_gps = 0
         self.e_gps_pre = 0
         self.n_gps_pre = 0
 
-        self.e_final = None
-        self.n_final = None
+        self.e_final = 0
+        self.n_final = 0
         self.u_final = 0
 
         self.e_final_pre = 0
@@ -64,13 +65,14 @@ class Localization():
 
         self.yaw_gps = 0
         self.yaw_imu = 0
-        self.yaw_final = None
+        self.yaw_final = 0
 
         # encoder buffer
         self.c = 0
         self.d = 0
         self.e = 0
         self.f = 0
+
 
 
         self.encoder_flag = 0
@@ -89,8 +91,8 @@ class Localization():
         self.diff_right = 0
         self.HeadingFrontBackFlg = None # 차량 앞뒤 방향 플래그 , offset업데이트시 사용
 
-        self.e_DR = None
-        self.n_DR = None
+        self.e_DR = 0
+        self.n_DR = 0
         # self.e_DR = 30.40
         # self.n_DR = 36.72
 
@@ -108,8 +110,8 @@ class Localization():
         self.gps_out = 0
         self.imu_out = 0
         self.headingAcc = 99999999
-        self.e_filter = None
-        self.n_filter = None
+        self.e_filter = 0
+        self.n_filter = 0
 
         self.cur_point = Point32()
         self.cur_points = PointCloud()
@@ -181,10 +183,10 @@ class Localization():
             self.position_flag = 0
 
     def msg_write(self,msg):
-        self.msg.pose.pose.position.x = float(self.e_final)
-        self.msg.pose.pose.position.y = float(self.n_final)
-        self.msg.pose.pose.position.z = float(self.velocity)
-        self.msg.twist.twist.angular.z = self.yaw_final
+        self.msg.x = float(self.e_final)
+        self.msg.y = float(self.n_final)
+        self.msg.velocity = float(self.velocity)
+        self.msg.heading = self.yaw_final
         self.e_final_pre = self.e_final
         self.n_final_pre = self.n_final
 
@@ -322,8 +324,8 @@ class Localization():
 
         self.dis_DR_enc = (self.dis_DR_enc_right + self.dis_DR_enc_left)/2 # encoder 왼쪽 오른쪽 평균내기
 
-        self.e_DR += self.dis_DR_enc*math.cos(self.yaw_final*3.141592/180)
-        self.n_DR += self.dis_DR_enc*math.sin(self.yaw_final*3.141592/180)
+        self.e_DR += self.dis_DR_enc*math.cos(self.yaw_final*PI/180)
+        self.n_DR += self.dis_DR_enc*math.sin(self.yaw_final*PI/180)
 
         self.yaw_check()
 
@@ -402,10 +404,10 @@ class Localization():
     def Time_call(self,time):
         self.t_Time_call = t.time()
 
-        if self.t_Time_call - self.t_GPS_call > 0.2:
-            self.gps_out = 1
-        else:
-            self.gps_out = 0
+        # if self.t_Time_call - self.t_GPS_call > 0.2:
+        #     self.gps_out = 1
+        # else:
+        #     self.gps_out = 0
 
         if self.t_Time_call - self.t_IMU_call > 0.5:
             self.imu_out = 1
@@ -419,6 +421,8 @@ class Localization():
         print("I:",round(self.yaw_imu),"  g:",round(self.yaw_gps),"   O: ",round(self.offset),"  f:",round(self.yaw_final),"   FBflg",self.HeadingFrontBackFlg, "    y_check", self.yaw_flag)
         self.msg.header.stamp = rospy.Time.now()
         self.pub.publish(self.msg)   
+
+
 
 loc = Localization()
 rospy.Subscriber('/Displacement', Int64 , loc.Get_Dis_left)

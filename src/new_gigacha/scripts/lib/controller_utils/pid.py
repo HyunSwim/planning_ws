@@ -11,30 +11,30 @@ class PID:
         self.target_ex = 0
         self.delta_target = 0
 
-    def run(self, current, target):
+    def run(self, current_speed, target_speed):
         if self.state.auto_manual > self.pre_auto_manual : 
             self.error_sum = 0.0
             
-            print("----------------------------------------")
+            print("--------------PID start!!----------------")
         
         self.pre_auto_manual = self.state.auto_manual
         print(self.error_sum)
 
 
-        error = target - current
+        error = target_speed - current_speed
         diff_error = min(60, error - self.pre_error) 
         self.pre_error = error
         self.error_sum += error
-        self.delta_target = abs(target - self.target_ex)
+        self.delta_target = abs(target_speed - self.target_ex)
 
-        return max(target - 1 , self.P*error + self.D*diff_error/self.dt + self.I*self.error_sum*self.dt)
+        return max(target_speed - 1 , self.P*error + self.D*diff_error/self.dt + self.I*self.error_sum*self.dt)
 
-        # if (target >= current or self.delta_target > 3 ) and target > 2  :
-        #     self.target_ex = target
+        # if (target_speed >= current_speed or self.delta_target > 3 ) and target_speed > 2  :
+        #     self.target_ex = target_speed
 
         #     return self.P*error + self.D*diff_error/self.dt + self.I*self.error_sum*self.dt
         # else :
-        #     self.target_ex = target
-        #     return target
+        #     self.target_ex = target_speed
+        #     return target_speed
 
 

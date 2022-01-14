@@ -25,6 +25,6 @@ class IndexFinder:
                 min_idx = i
                 self.save_idx = i
         print(f'lateral_error : {min_dis}')
-            
+   
         self.ego.index = min_idx
         return self.ego.index

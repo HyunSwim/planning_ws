@@ -58,23 +58,14 @@ class Controller:
             # if self.curve_check > 20 :
             #     self.state.target_speed = 10.0 - abs(self.curve_check)/10
             # else :
-            #     self.state.target_speed = 15.0
+            #     self.state.target_speed = 6.0
 
         print(self.control_msg)
-        # velocity = self.state.target_speed, self.state.speed                                        ####speed graph
-        # print("{0},{1}".format(self.state.target_speed,self.state.speed))
-        # table = np.array([0,1])
-        # route = np.asarray(self.state.target_speed, self.state.speed)  
-        # table = np.append(table, route, axis=0)
-        # np.savetxt("self_control_msg.csv", table, fmt='%f', delimiter=",") 
 
     def publish_control_info(self, estop, gear):
             self.control_msg.emergency_stop = estop
             self.control_msg.gear = gear
             self.control_msg.steer = self.lat_controller.run()
-            ####################For PID Tuining
-            # self.control_msg.steer = 0 
-            #######################################
             self.control_msg.speed, self.control_msg.brake = self.lon_controller.run()   
             self.control_pub.publish(self.control_msg)
     

@@ -3,7 +3,7 @@ import numpy as np
 
 class Stanley_Method:
     def __init__(self, state, global_path, local_path):
-        self.k = -0.8 # CTR parameter
+        self.k = -0.8 # CTR parameter                 ##############
         
         self.state = state
         self.global_path = global_path
@@ -51,7 +51,7 @@ class Stanley_Method:
         cte = np.dot([dx, dy], perp_vec)
         
         if self.state.mode != "driving":
-            k_s = 3.0 # must change
+            k_s = 3.0 # must change                                  ###########
         else :
             k_s = 0
         k_s = 0
@@ -64,7 +64,7 @@ class Stanley_Method:
 
         direction = 1
         # steering
-        # if self.state.mode == "backward":
+        # if self.state.mode == "backward":                          ############
             # direction = -1
         steer = degrees(yaw_term + cte_term)
         print(f"self.state.heading : {self.state.heading}")
@@ -73,5 +73,4 @@ class Stanley_Method:
         print(f"-----index : {min_index}")
 
         return max(min((steer)*direction, 27.0), -27.0)
-        # return real_steer
         # return steer

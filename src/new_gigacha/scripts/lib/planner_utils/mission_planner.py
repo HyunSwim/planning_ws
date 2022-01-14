@@ -17,17 +17,15 @@ class MissionPlanner:
         # if self.ego.mission == "Init":
         #     self.ego.mission = "parking"
 
-        if self.ego.status == "Ready":
+        if self.ego.status == "Ready" and self.state.mode == "driving":
             # self.ego.global_path = self.ego.local_path
             # self.ego.mission = self.ego.local_path[self.ego.index]
         
-            dist = hypot(self.ego.x - adsf, self.ego.y - asdfsadf)
+            dist = hypot(self.ego.pose.x - self.ego.global_path.x[990], self.ego.pose.y - self.ego.global_path.y[990])
 
             if dist < 1:
                 self.ego.mission = "parking"
         
-
-
 
         #For parking
         print(f"status: {self.ego.status}\n, mode:{self.ego.mode}")

@@ -43,8 +43,8 @@ class Localization():
         rospy.Subscriber("/simul_gps", Pose, self.gpsCallback)
         rospy.Subscriber("/simul_imu", Pose, self.imuCallback)
         
-        rospy.Subscriber('/gps_data/navpvt',NavPVT, self.gps_Heading)
-        rospy.Subscriber("/gps_data/fix", NavSatFix, self.gpsCallback)
+        rospy.Subscriber('/ublox_gps/navpvt',NavPVT, self.gps_Heading)
+        rospy.Subscriber("/ublox_gps/fix", NavSatFix, self.gpsCallback)
         rospy.Subscriber("/imu", Imu, self.imuCallback)
 
 

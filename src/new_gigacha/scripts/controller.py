@@ -31,14 +31,14 @@ class Controller:
 
         
 
-        self.lat_controller= PurePursuit(self.state, self.global_path, self.local_path) 
-        # self.lat_controller= Stanley_Method(self.state, self.global_path, self.local_path)
+        # self.lat_controller= PurePursuit(self.state, self.global_path, self.local_path) 
+        self.lat_controller= Stanley_Method(self.state, self.global_path, self.local_path)
         # self.lat_controller= Combined_Method(self.state, self.global_path, self.local_path)
         # self.curve_check = min(max (self.lat_controller.deaccel(), -27), 27)
         self.lon_controller = longitudinalController(self.state)
 
     def run(self):
-        # self.lat_controller.make_yaw()                 #stanley
+        self.lat_controller.make_yaw()                 #stanley
         if self.state.mode == "emergency_stop":            
             self.publish_control_info(1, 2)
 

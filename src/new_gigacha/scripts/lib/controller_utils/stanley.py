@@ -10,7 +10,7 @@ class Stanley_Method:
         self.local_path = local_path
         self.yaw = []
         self.checkpoint = False # after parking, checkpoint is true
-0000
+
     def normalize(self, angle):
         while angle > pi:
             angle -= 2.0 * pi

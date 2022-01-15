@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
+from __future__ import division, print_function #파이썬3문법을 2에서도 쓸수있게해줌
 import rospy
 from geometry_msgs.msg import Pose, PoseStamped
 from new_gigacha.msg import Local
 from sensor_msgs.msg import NavSatFix, Imu
+from std_msgs.msg import Int64,Float32
 # from tf.transformations import euler_from_quaternion
 import pymap3d
 from numpy import rad2deg
@@ -10,6 +12,11 @@ from ublox_msgs.msg import NavPVT
 from filterpy.kalman import KalmanFilter
 from scipy.linalg import block_diag
 from filterpy.common import Q_discrete_white_noise
+import numpy as np
+import math
+import matplotlib.pyplot as plt
+
+PI = math.pi
 
 #roslaunch ublox_gps ublox_zed-f9p.launch
 class Localization():
@@ -70,6 +77,10 @@ class Localization():
         self.diff_right = 0
         self.HeadingFrontBackFlg = 1 # 차량 앞뒤 방향 플래그 , offset업데이트시 사용
 
+        self.c = 0
+        self.d = 0
+        self.e = 0
+        self.f = 0
         
 
 
@@ -80,8 +91,8 @@ class Localization():
         rospy.Subscriber("/ublox_gps/fix", NavSatFix, self.gpsCallback)
         rospy.Subscriber("/imu", Imu, self.imuCallback)
 
-        rospy.Subscriber('/Displacement', Int64 , loc.Get_Dis_left)
-        rospy.Subscriber("/Displacement_right", Int64, loc.Get_Dis_right)
+        rospy.Subscriber('/Displacement', Int64 , self.Get_Dis_left)
+        rospy.Subscriber("/Displacement_right", Int64, self.Get_Dis_right)
 
 
 
@@ -99,14 +110,19 @@ class Localization():
         dt = 0.1
         
         # State Transition Matrix F
-        f.F = np.array([[1,0,0,0],
-                        [0,1,0,0],
+        # f.F = np.array([[1,0,0,0],
+        #                 [0,1,0,0],
+        #                 [0,0,1,0],
+        #                 [0,0,0,1]])
+        # f.B = np.array([[math.cos(self.final_yaw)*dt,0],
+        #                 [math.sin(self.final_yaw)*dt,0],
+        #                 [0,0],
+        #                 [0,0]])       
+        
+        f.F = np.array([[1,0,0,math.cos(self.final_yaw*PI/180)*dt],
+                        [0,1,0,math.sin(self.final_yaw*PI/180)*dt],
                         [0,0,1,0],
                         [0,0,0,1]])
-        f.B = np.array([[math.cos(self.final_yaw)*dt,0],
-                        [math.sin(self.final_yaw)*dt,0],
-                        [0,0],
-                        [0,0]])                 
         
         # Noise (l)
         q = Q_discrete_white_noise(dim=2, dt=0.1, var=0.001)                # moise Q 상태변수에 영향을 주는 잡음
@@ -137,6 +153,14 @@ class Localization():
         
         return f
 
+    def H_of(self,x):
+        
+        return np.array([[1,0,0,0],
+                        [0,1,0,0],
+                        [0,0,1,0],
+                        [0,0,0,1]]) 
+
+
     def gpsCallback(self, data):
         self.msg.x, self.msg.y, _ = pymap3d.geodetic2enu(data.latitude, data.longitude, self.alt_origin, \
                                             self.lat_origin , self.lon_origin, self.alt_origin)
@@ -149,13 +173,17 @@ class Localization():
         zs = (self.msg.x,self.msg.y,self.yaw_final,self.velocity)
         
         filter = self.all_filter()
-        filter.predict(np.array([1,0]))
-        filter.update(zs,self.HJacobian,self.Hx)
+        filter.predict()
+        # filter.predict(np.array([1,0]))
+        filter.update(zs)
+        
+        
+        # filter.update(zs)
         self.e_filter = filter.x[0]
         self.n_filter = filter.x[1]
 
-        self.X1.append(self.e_gps)
-        self.Y1.append(self.n_gps)
+        self.X1.append(self.msg.x)
+        self.Y1.append(self.msg.y)
 
         self.X2.append(self.e_filter)
         self.Y2.append(self.n_filter)
@@ -163,7 +191,7 @@ class Localization():
 
         self.ps(self.X1, self.Y1, self.X2, self.Y2)
 
-    def ps(self,X1,Y1,X2,Y2,X3,Y3):
+    def ps(self,X1,Y1,X2,Y2):
         plt.ion()
         animated_plot = plt.plot(X1, Y1, 'r')[0]
         animated_plot2 = plt.plot(X2, Y2, 'b')[0]

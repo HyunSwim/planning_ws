@@ -27,12 +27,12 @@ class Controller:
         self.update_state = stateUpdater(self.state)
         # self.update_local_path = pathUpdater(self.local_path)
 
-        self.state.target_speed = 6.0 #TODO: decided by mission or map
+        self.state.target_speed = 5.0 #TODO: decided by mission or map
 
 
-        self.lat_controller= PurePursuit(self.state, self.global_path, self.local_path) 
+        # self.lat_controller= PurePursuit(self.state, self.global_path, self.local_path) 
         # self.lat_controller= Stanley_Method(self.state, self.global_path, self.local_path)
-        # self.lat_controller= Combined_Method(self.state, self.global_path, self.local_path)
+        self.lat_controller= Combined_Method(self.state, self.global_path, self.local_path)
         # self.curve_check = min(max (self.lat_controller.deaccel(), -27), 27)
         self.lon_controller = longitudinalController(self.state)
 
@@ -46,19 +46,19 @@ class Controller:
 
         elif self.state.mode == "backward":
             self.publish_control_info(0, 2)
-            self.state.target_speed = 3.0           
+            self.state.target_speed = 2.0           
         
         elif self.state.mode == "parking_driving":
             self.publish_control_info(0, 0)
-            self.state.target_speed = 3.0 
+            self.state.target_speed = 2.0 
             
         else:
             self.publish_control_info(0, 0)
-            self.state.target_speed = 6.0
+            self.state.target_speed = 5.0
             # if self.curve_check > 20 :
             #     self.state.target_speed = 10.0 - abs(self.curve_check)/10
             # else :
-            #     self.state.target_speed = 6.0
+            #     self.state.target_speed = 5.0
 
         print(self.control_msg)
 

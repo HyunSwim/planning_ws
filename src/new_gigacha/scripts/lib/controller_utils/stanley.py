@@ -3,7 +3,7 @@ import numpy as np
 
 class Stanley_Method:
     def __init__(self, state, global_path, local_path):
-        self.k = -0.8 # CTR parameter                 ##############
+        self.k = -0.5 # CTR parameter                 ##############
         
         self.state = state
         self.global_path = global_path
@@ -50,10 +50,10 @@ class Stanley_Method:
         perp_vec = [cos(radians(self.state.heading)+pi/2), sin(radians(self.state.heading)+pi/2)]
         cte = np.dot([dx, dy], perp_vec)
         
-        if self.state.mode != "driving":
-            k_s = 3.0 # must change                                  ###########
-        else :
-            k_s = 0
+        # if self.state.mode != "driving":
+        #     k_s = 4.0 # must change                                  ###########
+        # else :
+        #     k_s = 0
         k_s = 0
 
         final_yaw = -(map_yaw - radians(self.state.heading))

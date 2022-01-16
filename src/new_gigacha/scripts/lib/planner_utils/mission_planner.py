@@ -17,7 +17,7 @@ class MissionPlanner:
         # if self.ego.mission == "Init":
         #     self.ego.mission = "parking"
 
-        if self.ego.status == "Ready" and self.state.mode == "driving":
+        if self.ego.status == "Ready":
             # self.ego.global_path = self.ego.local_path
             # self.ego.mission = self.ego.local_path[self.ego.index]
         

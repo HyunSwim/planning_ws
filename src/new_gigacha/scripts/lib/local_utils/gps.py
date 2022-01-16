@@ -1,4 +1,3 @@
-from re import X
 import rospy
 from sensor_msgs.msg import NavSatFix
 import pymap3d as pm
@@ -19,6 +18,6 @@ class GPS:
 
         self.x, self.y, self.z = pm.geodetic2enu(lat,lon,alt,base[0],base[1],base[2])
 
-        return self.x, self.y, self.z
+        return self.x, self.y
 
 rospy.Subscriber('/gps_data/fix',NavSatFix,GPS.gps_call_back)

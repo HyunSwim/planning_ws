@@ -13,7 +13,7 @@ class IMU:
         orientation_q = data.pose.pose.orientation
         orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
         self.roll, self.pitch, self.yaw = euler_from_quaternion(orientation_list)
-        return self.yaw
 
+        return self.yaw
 
 rospy.Subscriber('/imu',Imu,IMU.imu_call_back)

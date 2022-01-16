@@ -4,7 +4,7 @@ import pymap3d as pm
 
 class GPS:
     def __init__(self):
-        rospy.init_node('Gnss_Node', anonymous = True)
+        rospy.init_node("/Gnss_Node", anonymous = True)
         self.x = 0
         self.y = 0
         self.z = 0
@@ -20,4 +20,5 @@ class GPS:
 
         return self.x, self.y
 
-rospy.Subscriber('/gps_data/fix',NavSatFix,GPS.gps_call_back)
+rospy.Subscriber('/ublox_gps/fix',NavSatFix,GPS.gps_call_back)
+rospy.spin()

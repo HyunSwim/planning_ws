@@ -4,7 +4,7 @@ from tf.transformations import euler_from_quaternion
 
 class IMU:
     def __init__(self):
-        rospy.init_node("Imu_node",anonymous = True)
+        rospy.init_node("/Imu_node",anonymous = True)
         self.roll = 0
         self.pitch = 0
         self.yaw = 0
@@ -17,3 +17,4 @@ class IMU:
         return self.yaw
 
 rospy.Subscriber('/imu',Imu,IMU.imu_call_back)
+rospy.spin()

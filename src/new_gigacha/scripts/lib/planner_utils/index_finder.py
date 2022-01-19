@@ -8,16 +8,21 @@ class IndexFinder:
 
     def run(self):
         
-
         min_dis = -1
         min_idx = 0
-        
-        print(f"Global path length: {len(self.ego.global_path.x)}")
+
+        if self.ego.mission == "Init":
+            self.path = self.ego.global_path
+            
+        elif self.ego.mission == "parking":
+            self.path = self.ego.local_path
+
+        print(f"Path length: {len(self.path.x)}")
         step_size = 100
 
         for i in range(max(self.ego.index - step_size, 0), self.ego.index + step_size):
             try:
-                dis = hypot(self.ego.global_path.x[i] - self.ego.pose.x, self.ego.global_path.y[i] - self.ego.pose.y)
+                dis = hypot(self.path.x[i] - self.ego.pose.x, self.path.y[i] - self.ego.pose.y)
             except IndexError:
                 break
             if (min_dis > dis or min_dis == -1) and self.save_idx <= i:
@@ -25,6 +30,6 @@ class IndexFinder:
                 min_idx = i
                 self.save_idx = i
 
-            
+
         self.ego.index = min_idx
         return self.ego.index

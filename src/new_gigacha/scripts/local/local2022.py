@@ -18,6 +18,7 @@ import numpy as np
 from numpy.random import randn
 from sensor_msgs.msg import PointCloud
 from geometry_msgs.msg import Point32
+from new_gigacha.msg import Local
 
 # 좌표변환모듈
 # import pymap3d as pm
@@ -45,8 +46,8 @@ proj_UTMK = Proj(init='epsg:5178') # UTM-K(Bassel) 도로명주소 지도 사용
 class Localization():
     def __init__(self):
         rospy.init_node('Position_Node', anonymous=False)
-        self.pub = rospy.Publisher('/pose', Odometry, queue_size = 1)
-        self.msg = Odometry()
+        self.pub = rospy.Publisher('/pose', Local, queue_size = 1)
+        self.msg = Local()
 
 
         self.e_gps = None
@@ -97,10 +98,10 @@ class Localization():
             self.position_flag = 0 # RTK 연결되면 
 
     def msg_write(self,msg): #좌표, 헤딩을 msg에 쓰는 함수 
-        self.msg.pose.pose.position.x = float(self.e_gps)
-        self.msg.pose.pose.position.y = float(self.n_gps)
+        self.msg.x = float(self.e_gps)
+        self.msg.y = float(self.n_gps)
         # self.msg.pose.pose.position.z = float(self.velocity) #실제 정확하지 못했던 속도
-        self.msg.twist.twist.angular.z = self.yaw_final
+        self.msg.heading = self.yaw_final
 
 
     def GPS_fix_call(self,data): #GPS 패키지로부터 위경도 좌표 받아오는 콜백 함수
@@ -112,10 +113,10 @@ class Localization():
         self.status = data.status.status #RTK status
 
         # UTM-K좌표로 변환
-        self.e_gps, self.n_gps = transform(proj_WGS84, proj_UTMK, lat, lon)
+        # self.e_gps, self.n_gps = transform(proj_WGS84, proj_UTMK, lat, lon)
 
         #위도경도 좌표를 직가평면좌표계로 변환 (파이맵3디 상대좌표)
-        #self.e_gps,self.n_gps,self.u_gps = pm.geodetic2enu(lat,lon,alt,base_lat,base_lon,base_alt) 
+        self.e_gps,self.n_gps,self.u_gps = pm.geodetic2enu(lat,lon,alt,base_lat,base_lon,base_alt) 
 
         self.gps_check()
 

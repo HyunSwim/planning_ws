@@ -14,18 +14,27 @@ class MissionPlanner:
             # self.ego.mission=self.ego.global_path.mission[self.ego.index]
             # self.ego.mode = "small"
 
+        # if self.ego.mission == "Init":
+        #     self.ego.mission = "parking"
 
-        if self.ego.mission == "Init":
-            self.ego.mission = "parking"
+        if self.ego.status == "Ready":
+            # self.ego.global_path = self.ego.local_path
+            # self.ego.mission = self.ego.local_path[self.ego.index]
+        
+            dist = hypot(self.ego.pose.x - self.ego.global_path.x[990], self.ego.pose.y - self.ego.global_path.y[990])
 
+            if dist < 1:
+                self.ego.mission = "parking"
+        
+
+        #For parking
         print(f"status: {self.ego.status}\n, mode:{self.ego.mode}")
         if self.ego.mission == "parking":
-            dist1 = hypot(self.ego.pose.x - self.ego.global_path.x[990], \
-                        self.ego.pose.y - self.ego.global_path.y[990]  )
-            # dist1 = hypot(self.ego.pose.x - self.ego.global_path.x[0], \
-            #     self.ego.pose.y - self.ego.global_path.y[0]  )
+            dist1 = hypot(self.ego.pose.x - self.ego.local_path.x[0], \
+                        self.ego.pose.y - self.ego.local_path.y[1]  )
+            # dist1 = hypot(self.ego.pose.x - self.ego.local_path.x[0], \
+            #     self.ego.pose.y - self.ego.local_path.y[0]  )
             print(f"dist1: {dist1}")
-            
             
             if dist1 < 1 and self.ego.mode == "driving" and self.pre_time < 0 and self.check == 0 :
                 self.ego.status = "parking ready"
@@ -38,12 +47,12 @@ class MissionPlanner:
                 self.check = 1
                 
         
-            dist2 = hypot(self.ego.pose.x - self.ego.global_path.x[1113], \
-                        self.ego.pose.y - self.ego.global_path.y[1113]  )
+            dist2 = hypot(self.ego.pose.x - self.ego.local_path.x[124], \
+                        self.ego.pose.y - self.ego.local_path.y[124]  )
             print(f"dist2: {dist2}")
 
             
-            if dist2 < 1 and self.ego.mode == "parking_driving" and self.aft_time < 0:
+            if dist2 < 2.5 and self.ego.mode == "parking_driving" and self.aft_time < 0:
                 self.ego.status = "parking complete"
                 self.ego.mode = "emergency_stop"
                 self.aft_time = time()
@@ -58,11 +67,11 @@ class MissionPlanner:
             dist3 = hypot(self.ego.pose.x - self.ego.global_path.x[1225], \
                         self.ego.pose.y - self.ego.global_path.y[1225]  )
             
-            if dist3 < 2.0 and self.ego.status == "parking backward" and self.aft_time < 0 :
+            if dist3 < 4.0 and self.ego.status == "parking backward" and self.aft_time < 0 :
                 self.ego.status = "parking end"
                 self.ego.mode = "emergency_stop"
                 self.aft_time = time()
-
+            print(f"dist3: {dist3}")
 
             if self.ego.status == "parking end" and time() - self.aft_time > 3:
                 self.ego.status = "general"
@@ -71,11 +80,7 @@ class MissionPlanner:
                 self.ego.mission = "gogo"
 
             
-            
-
-            
         
-
         # #Mode Decision
         # if self.ego.state is not "Ready":
 

@@ -44,8 +44,8 @@ class Combined_Method:
             k_pp = self.k_min + (beta/self.beta_max)*(self.k_max - self.k_min)
 
         k_st = 1 - k_pp
-        if self.state.mode == "backward":
-            k_pp = 0
+        # if self.state.mode == "backward":                                ##############
+        #     k_pp = 0
         # print(f"d : {d}")
         # print(f"R_min : {self.R_min}")
         print(f"k_pp : {k_pp}")

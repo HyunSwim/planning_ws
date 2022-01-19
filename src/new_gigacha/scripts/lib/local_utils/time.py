@@ -12,4 +12,3 @@ while not rospy.is_shutdown():
     test.data = rospy.Time.now()
     pub.publish(test)
     rate.sleep()
-

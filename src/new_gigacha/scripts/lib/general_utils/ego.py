@@ -14,5 +14,5 @@ class EgoVehicle:
         # self.nearby_obs = []
         self.obs_map=PointCloud()
         self.global_path = Path()
-        self.local_path=Path()
+        self.local_path = Path()
         self.veh_index=0

@@ -22,8 +22,9 @@ class Controller:
         self.control_msg = Control_Info()
 
         self.state = State()
-        self.global_path = read_global_path('songdo', 'parking')
-        self.local_path = Path()
+        self.global_path = read_global_path('songdo', 'global_simul')
+        self.parking_path = read_global_path('songdo', 'parking_only_simul')
+        # self.local_path = Path()
         
         self.update_state = stateUpdater(self.state)
         # self.update_local_path = pathUpdater(self.local_path)
@@ -32,16 +33,7 @@ class Controller:
         self.state.target_speed = 5.0 #TODO: decided by mission or map
 
 
-        # self.lat_controller= PurePursuit(self.state, self.global_path, self.local_path) 
-        # self.lat_controller= Stanley_Method(self.state, self.global_path, self.local_path)
-        self.lat_controller= Combined_Method(self.state, self.global_path, self.local_path)
-=======
-        self.state.target_speed = 10.0 #TODO: decided by mission or map
-        
-        self.lat_controller = PID_C(self.state, self.global_path, self.local_path)
-        # self.lat_controller= PurePursuit(self.state, self.global_path, self.local_path) 
-        # self.lat_controller= PurePursuit(self.state, self.global_path, self.local_path)
-        # self.lat_controller= PurePursuit(self.state, self.global_path, self.local_path
+        self.lat_controller= PurePursuit(self.state, self.global_path, self.parking_path) 
         # self.lat_controller= Stanley_Method(self.state, self.global_path, self.local_path)
         # self.lat_controller= Combined_Method(self.state, self.global_path, self.local_path)
 >>>>>>> PID_Auto_tuning
@@ -50,7 +42,6 @@ class Controller:
 
     def run(self):
         # self.lat_controller.make_yaw()                 #stanley
-<<<<<<< HEAD
         if self.state.mode == "emergency_stop":            
 =======
         if self.state.mode == "emergency_stop":

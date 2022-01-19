@@ -14,7 +14,6 @@ class MissionPlanner:
             # self.ego.mission=self.ego.global_path.mission[self.ego.index]
             # self.ego.mode = "small"
 
-
         if self.ego.mission == "Init":
             self.ego.mission = "parking"
 
@@ -25,7 +24,6 @@ class MissionPlanner:
             # dist1 = hypot(self.ego.pose.x - self.ego.global_path.x[0], \
             #     self.ego.pose.y - self.ego.global_path.y[0]  )
             print(f"dist1: {dist1}")
-            
             
             if dist1 < 1 and self.ego.mode == "driving" and self.pre_time < 0 and self.check == 0 :
                 self.ego.status = "parking ready"
@@ -43,7 +41,7 @@ class MissionPlanner:
             print(f"dist2: {dist2}")
 
             
-            if dist2 < 1 and self.ego.mode == "parking_driving" and self.aft_time < 0:
+            if dist2 < 2.5 and self.ego.mode == "parking_driving" and self.aft_time < 0:
                 self.ego.status = "parking complete"
                 self.ego.mode = "emergency_stop"
                 self.aft_time = time()
@@ -58,7 +56,7 @@ class MissionPlanner:
             dist3 = hypot(self.ego.pose.x - self.ego.global_path.x[1225], \
                         self.ego.pose.y - self.ego.global_path.y[1225]  )
             
-            if dist3 < 3.0 and self.ego.status == "parking backward" and self.aft_time < 0 :
+            if dist3 < 4.0 and self.ego.status == "parking backward" and self.aft_time < 0 :
                 self.ego.status = "parking end"
                 self.ego.mode = "emergency_stop"
                 self.aft_time = time()

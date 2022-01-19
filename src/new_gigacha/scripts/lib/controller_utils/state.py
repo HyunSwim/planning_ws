@@ -10,7 +10,7 @@ class State:
         self.heading = -1.0
         self.speed = -1.0
         self.brake = -1.0
-        self.steer = -1.0
+        self.steer = 0.0
         self.gear = -1.0
         self.target_speed = 0.0
         self.auto_manual = -1.0    

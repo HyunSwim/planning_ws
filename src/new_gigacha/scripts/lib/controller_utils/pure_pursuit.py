@@ -40,8 +40,14 @@ class PurePursuit:
         if self.state.mode == "backward" :
             angle = -angle
 
+<<<<<<< HEAD
         return max(min(degrees(angle), 27.0), -27.0), target_index
         # return max(min(degrees(angle), 27.0), -27.0)
+=======
+        # return max(min(degrees(angle), 27.0), -27.0), target_index
+
+        return max(min(degrees(angle), 27.0), -27.0)
+>>>>>>> PID_Auto_tuning
         # return angle
 
     

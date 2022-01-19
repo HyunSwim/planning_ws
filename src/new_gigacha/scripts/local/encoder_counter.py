@@ -28,11 +28,6 @@ class Localization():
 				res = self.ser.readline()
 
 		self.pub.publish(int(res))
-		# print(int(res))
-
-
-
-
 
 loc = Localization()
 while not rospy.is_shutdown():

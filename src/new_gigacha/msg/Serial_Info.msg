@@ -4,5 +4,5 @@ int16 gear
 float32 speed
 float32 steer
 int16 brake
-float32 encoder
+float32[] encoder
 

@@ -15,7 +15,7 @@ import rospy
 class Planner:
     def __init__(self):
         rospy.init_node("Planner", anonymous=False)
-        print(f"Planner: Initializing Planner...")
+        # print(f"Planner: Initializing Planner...")
         self.ego = EgoVehicle()
         # self.ego.global_path = read_global_path('songdo', 'parking')
         self.ego.global_path = read_global_path('songdo', 'parking_simul')
@@ -42,10 +42,10 @@ class Planner:
 
         self.publish_planning_info()
 
-        print(f'Ego index: {self.ego.index}')
+        # print(f'Ego index: {self.ego.index}')
 
         distance = hypot(self.ego.global_path.x[0]-self.ego.pose.x, self.ego.global_path.y[0]-self.ego.pose.y)
-        print(f"Distance: {distance}")
+        # print(f"Distance: {distance}")
 
 
 if __name__ == "__main__":

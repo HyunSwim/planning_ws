@@ -11,8 +11,8 @@ import rospy
 class Serial_IO:
     def __init__(self):
         # Serial Connect
-        self.ser = serial.Serial("/dev/ttyUSB0", 115200)
-        print("Serial_IO: Serial connecting to /dev/ttyUSB0...")
+        self.ser = serial.Serial("/dev/erp42", 115200)
+        print("Serial_IO: Serial connecting to /dev/erp42...")
 
         # ROS Publish
         rospy.init_node("Serial_IO", anonymous=False)
@@ -21,7 +21,7 @@ class Serial_IO:
 
 
         # Messages/Data
-        self.serial_msg = Serial_Info()  # Message to publish
+        self.serial_msg = Serial_Info()  # Message o publish
         self.alive = 0
 
         #Subscribe Control Info from Controller
@@ -44,7 +44,7 @@ class Serial_IO:
         print("Serial_IO: Serial reading thread successfully started")
 
         while True:
-
+            
             print(f"Serial_IO: Reading serial {self.alive}")
 
             packet = self.ser.read_until(b'\x0d\x0a')
@@ -71,8 +71,8 @@ class Serial_IO:
                     self.serial_msg.brake = struct.unpack("B", packet[10:11])[0]
 
                     #encoder -- not working
-                    # self.serial_msg.encoder  struct.unpack("f", packet[11:15])
-                    self.serial_msg.encoder = -1
+                    self.serial_msg.encoder = struct.unpack("BBBB", packet[11:15])
+                    # self.serial_msg.encoder = -1
 
                     #alive (heartbeat)
                     self.alive = struct.unpack("B", packet[15:16])[0]

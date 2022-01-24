@@ -64,8 +64,8 @@ class Stanley_Method:
 
         direction = 1
         # steering
-        if self.state.mode == "backward":                          ############
-            direction = -1
+        # if self.state.mode == "backward":                    ############
+        #     direction = -1
         steer = degrees(yaw_term + cte_term)
 
         print(f"self.state.heading : {self.state.heading}")

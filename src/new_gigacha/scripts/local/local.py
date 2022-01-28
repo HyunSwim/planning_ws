@@ -23,7 +23,6 @@ import pymap3d as pm
 from new_gigacha.msg import Local
 import time as t
 from filterpy.kalman import KalmanFilter
-from scipy.linalg import block_diag
 from filterpy.common import Q_discrete_white_noise
 from filterpy.stats import plot_covariance_ellipse
 import threading

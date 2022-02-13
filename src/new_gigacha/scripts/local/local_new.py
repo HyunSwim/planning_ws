@@ -35,10 +35,10 @@ class Localization():
         # self.lon_origin = 126.773156667
         # self.alt_origin = 15.400
         
-        #Songdo
-        self.lat_origin = 37.3851693 
-        self.lon_origin = 126.6562271
-        self.alt_origin = 15.4
+        # #Songdo
+        # self.lat_origin = 37.3851693 
+        # self.lon_origin = 126.6562271
+        # self.alt_origin = 15.4
 
         self.yaw_gps = 0
         self.hAcc = 0
@@ -54,12 +54,12 @@ class Localization():
         self.Y2 = []
 
 
-        rospy.Subscriber("/simul_gps", Pose, self.gpsCallback)
-        rospy.Subscriber("/simul_imu", Pose, self.imuCallback)
+        rospy.Subscriber("/simul_gps", Pose, self.gps_call_back)
+        rospy.Subscriber("/simul_imu", Pose, self.imu_call_back)
         
         rospy.Subscriber('/ublox_gps/navpvt',NavPVT, self.gps_Heading)
-        rospy.Subscriber("/ublox_gps/fix", NavSatFix, self.gpsCallback)
-        rospy.Subscriber("/imu", Imu, self.imuCallback)
+        rospy.Subscriber("/ublox_gps/fix", NavSatFix, self.gps_call_back)
+        rospy.Subscriber("/imu", Imu, self.imu_call_back)
 
 
     def main(self):
@@ -208,11 +208,9 @@ class Localization():
          
             
 if __name__ == '__main__':
-    
     loc = Localization()
-    rate = rospy.Rate(50)
+    rate = rospy.Rate(10)
  
     while not rospy.is_shutdown():
-
         loc.main()
         rate.sleep()

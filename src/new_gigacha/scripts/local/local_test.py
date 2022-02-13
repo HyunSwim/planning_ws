@@ -141,31 +141,34 @@ class Localization():
         return self.pulse_left/100 # rotate rate _ left
 
     def Get_Enc_vel(self):
+        self.delta_theta = self.delta_theta_callback
+        
         self.t_old = self.t_new
         self.t_new = time.time()
         self.t_delta = float(self.t_new - self.t_old)
-
+        
         self.transitional_velocity = self.radius_wheel * (self.pulse_right + self.pulse_left) / (2 * self.t_delta)
         self.rotational_velocity = self.radius_wheel * (self.pulse_right - self.pulse_left) / (2 * self.distance_btw_wheel)
 
         self.dis = self.transitional_velocity*self.t_delta
-        # self.theta =  self.rotational_velocity*self.t_delta
+        self.theta_prev = self.theta
+        self.theta = self.theta_prev + self.rotational_velocity*self.t_delta
         # # print("theta=", self.theta)
 
-        # ### x, y 좌표값 계산
-        # if self.rotational_velocity==0:
-        #     ### 회전 속도가 0일 때, runge-kutta integration
-        #     # print("w=0")
-        #     x =  self.transitional_velocity*self.t_delta*math.cos(self.theta + (self.rotational_velocity*self.t_delta)/2)
-        #     y = self.transitional_velocity*self.t_delta*math.sin(self.theta + (self.rotational_velocity*self.t_delta)/2)
-        # else:
-        #     ### 회전 속도가 0이 아닐 때, exact integration
-        #     # print("w!=0")
-        #     ### 엔코더 버전
-        #     x =  (self.transitional_velocity/self.rotational_velocity) * (math.sin(self.routes[-1][3]) - math.sin(self.theta))
-        #     y =  - (self.transitional_velocity/self.rotational_velocity) * (math.cos(self.routes[-1][3]) - math.cos(self.theta))
+        ### x, y 좌표값 계산
+        if self.rotational_velocity==0:
+            ### 회전 속도가 0일 때, runge-kutta integration
+            # print("w=0")
+            x =  self.transitional_velocity*self.t_delta*math.cos(self.theta + (self.rotational_velocity*self.t_delta)/2)
+            y = self.transitional_velocity*self.t_delta*math.sin(self.theta + (self.rotational_velocity*self.t_delta)/2)
+        else:
+            ### 회전 속도가 0이 아닐 때, exact integration
+            # print("w!=0")
+            ### 엔코더 버전
+            x =  (self.transitional_velocity/self.rotational_velocity) * (math.sin(self.theta_prev) - math.sin(self.theta))
+            y =  - (self.transitional_velocity/self.rotational_velocity) * (math.cos(self.theta_prev) - math.cos(self.theta))
 
-        # self.dis_x , self.dis_y = x, y
+        self.dis_x , self.dis_y = x, y
     
     def fix_velocity(self,data):
         self.Get_Enc_vel()
@@ -207,7 +210,7 @@ class Localization():
         self.cov_xy_gps = data.position_covariance[1]
 
         #kalman filter 
-        zs = [self.e_gps,self.n_gps,self.yaw_gps,self.dis,0]
+        zs = np.asarray([self.e_gps,self.n_gps,self.yaw_gps,self.dis,0]).T
         
         # a = filter.HJacobian()
         # self.HJacobian = np.eye(5)
@@ -217,7 +220,7 @@ class Localization():
             return np.eye(5)
 
         def Hx(x):
-            return 1
+            return np.array([1,1,1,1,1]).T
 
         filter = self.all_filter()
         filter.predict()
@@ -257,6 +260,7 @@ class Localization():
     
     def IMU_call(self,data):       
         self.yaw_imu = data.orientation.x
+        self.delta_theta_callback = data.angular_velocity.z
 
         if self.yaw_imu < 0:
             # self.yaw_imu = self.yaw_imu + 360

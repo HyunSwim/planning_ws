@@ -43,12 +43,10 @@ class Localization():
         self.yaw_gps = 0
         self.yaw_imu = 0
         self.yaw_rate = 0
+        self.yaw_filter = 0
         
         self.X1 = []
-        self.Y1 = []
         self.X2 = []
-        self.Y2 = []
-
 
         rospy.Subscriber("/simul_gps", Pose, self.gps_call_back)
         rospy.Subscriber("/simul_imu", Pose, self.imu_call_back)
@@ -57,17 +55,7 @@ class Localization():
         rospy.Subscriber("/ublox_gps/fix", NavSatFix, self.gps_call_back)
         rospy.Subscriber("/imu", Imu, self.imu_call_back)
 
-
-    def main(self):     
-        self.pub.publish(self.msg)
-
-        self.vis_msg.pose.position.x = self.msg.x
-        self.vis_msg.pose.position.y = self.msg.y
-        self.vis_msg.header.stamp = rospy.Time.now()
-        self.vis_pub.publish(self.vis_msg)
-
-        print("self.yaw_imu:{}".format(self.yaw_imu))
-
+##########KALMAN FILTER##############
     def all_filter(self):
         f = KalmanFilter(dim_x=2,dim_z=2)
         dt = 0.1
@@ -76,7 +64,7 @@ class Localization():
                         [0,1]])
         
         # Noise (l)
-        q = Q_discrete_white_noise(dim=1, dt=0.1, var=0.001)                # moise Q 상태변수에 영향을 주는 잡음
+        q = Q_discrete_white_noise(dim=1, dt=0.1, var=0.001)
         f.Q = block_diag(q, q)
 
         # Observe Matrix H
@@ -92,6 +80,7 @@ class Localization():
         
         return f
 
+###############Get ENU Coordinate and implement KALMAN FILTER###########
     def gps_call_back(self, data):
         self.msg.x, self.msg.y, _ = pymap3d.geodetic2enu(data.latitude, data.longitude, self.alt_origin, \
                                             self.lat_origin , self.lon_origin, self.alt_origin)
@@ -107,8 +96,6 @@ class Localization():
         filter.predict()
         filter.update(zs)
         
-        
-        # filter.update(zs)
         self.yaw_filter = filter.x[0]
 
         self.X1.append(self.yaw_imu)
@@ -117,6 +104,7 @@ class Localization():
 
         self.ps(self.X1,self.X2)
 
+#################################################
     def ps(self,X1,X2):
         plt.ion()
         animated_plot = plt.plot(X1, 'r')[0]
@@ -132,13 +120,9 @@ class Localization():
                 animated_plot.set_xdata(X1[0:i])
         plt.draw()
         plt.pause(0.01)
+##################################################
 
-
-    # def imuCallback(self, data):
-    #     self.vis_msg.pose.orientation = data.orientation
-    #     self.yaw_imu = -data.orientation.x
-    #     self.msg.heading = self.yaw_final
-
+################Calculate heading###################
     def imu_call_back(self, data):
         self.vis_msg.pose.orientation = data.orientation
         self.yaw_rate = -data.angular_velocity.z
@@ -151,8 +135,8 @@ class Localization():
     def gps_Heading(self, data):
         self.yaw_gps = data.heading
 
+###############Quaternion to Euler####################
     def euler_from_quaternion(self,x, y, z, w):
-        
         t0 = +2.0 * (w * x + y * z)
         t1 = +1.0 - 2.0 * (x * x + y * y)
         roll_x = math.atan2(t0, t1)
@@ -168,6 +152,17 @@ class Localization():
      
         return roll_x, pitch_y, yaw_z # in radians
 
+
+    def main(self):
+        self.msg.heading = self.yaw_filter
+        self.pub.publish(self.msg)
+
+        self.vis_msg.pose.position.x = self.msg.x
+        self.vis_msg.pose.position.y = self.msg.y
+        self.vis_msg.header.stamp = rospy.Time.now()
+        self.vis_pub.publish(self.vis_msg)
+
+        print("self.yaw_imu:{}".format(self.yaw_imu))
 
 if __name__ == '__main__':
     loc = Localization()

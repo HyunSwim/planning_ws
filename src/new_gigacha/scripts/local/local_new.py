@@ -67,7 +67,7 @@ class Localization():
         self.vis_msg.header.stamp = rospy.Time.now()
         self.vis_pub.publish(self.vis_msg)
 
-        print("Localization is on...")
+        print("self.yaw_imu:{}".format(self.yaw_imu))
 
     def all_filter(self):
         f = KalmanFilter(dim_x=2,dim_z=2)
@@ -144,9 +144,9 @@ class Localization():
         self.vis_msg.pose.orientation = data.orientation
         self.yaw_rate = -data.angular_velocity.z
 
-        orientation_q = data.pose.pose.orientation
+        orientation_q = data.orientation
         orientation_list = [orientation_q.x, orientation_q.y, orientation_q.z, orientation_q.w]
-        roll, pitch, self.yaw = euler_from_quaternion(orientation_list)
+        roll, pitch, self.yaw_imu = euler_from_quaternion(orientation_list)
         
     def gps_Heading(self, data):
         self.yaw_gps = data.heading        

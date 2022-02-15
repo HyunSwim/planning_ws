@@ -3,7 +3,7 @@ import rospy
 from geometry_msgs.msg import Pose, PoseStamped
 from new_gigacha.msg import Local
 from sensor_msgs.msg import NavSatFix, Imu
-# from tf.transformations import euler_from_quaternion
+from tf.transformations import euler_from_quaternion
 import pymap3d
 from numpy import rad2deg
 from ublox_msgs.msg import NavPVT
@@ -43,8 +43,8 @@ class Localization():
         rospy.Subscriber("/simul_gps", Pose, self.gpsCallback)
         rospy.Subscriber("/simul_imu", Pose, self.imuCallback)
         
-        rospy.Subscriber('/ublox_gps/navpvt',NavPVT, self.gps_Heading)
-        rospy.Subscriber("/ublox_gps/fix", NavSatFix, self.gpsCallback)
+        rospy.Subscriber('/gps_data/navpvt',NavPVT, self.gps_Heading)
+        rospy.Subscriber("/gps_data/fix", NavSatFix, self.gpsCallback)
         rospy.Subscriber("/imu", Imu, self.imuCallback)
 
 

@@ -18,7 +18,7 @@ class stateUpdater:
         self.state.mode = msg.mode
         
     def serialCallback(self, msg):
-        self.state.auto_manual = msg.auto_manual    
+        self.state.auto_manual = msg.auto_manual
         self.state.steer = msg.steer
         self.state.speed = msg.speed
         self.state.brake = msg.brake

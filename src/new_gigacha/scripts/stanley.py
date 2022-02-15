@@ -33,49 +33,10 @@ class Stanley_Method:
         else:
             path = self.global_path
 
-        min_dist = 1e9
-        min_index = 0
-        n_points = len(self.global_path.x)
-
         front_x = self.state.x 
         front_y = self.state.y
     
         min_index = self.state.index
-
-        if self.state.mode == "backward":
-            for i in range(1106,1236):
-                
-                dx = front_x - self.global_path.x[i]
-                dy = front_y - self.global_path.y[i]
-
-                dist = sqrt(dx*dx+dy*dy)
-                
-                if dist < min_dist:
-                    min_dist = dist
-                    min_index = i
-
-        elif self.state.mode != "driving":
-            for i in range(1236):
-                
-                dx = front_x - self.global_path.x[i]
-                dy = front_y - self.global_path.y[i]
-
-                dist = sqrt(dx*dx+dy*dy)
-                
-                if dist < min_dist:
-                    min_dist = dist
-                    min_index = i
-        else:
-            for i in range(n_points):
-                
-                dx = front_x - self.global_path.x[i]
-                dy = front_y - self.global_path.y[i]
-
-                dist = sqrt(dx*dx+dy*dy)
-
-                if dist < min_dist:
-                    min_dist = dist
-                    min_index = i
 
         map_x =  self.global_path.x[min_index]
         map_y =  self.global_path.y[min_index]
@@ -108,5 +69,5 @@ class Stanley_Method:
         print(f"yaw_term : {degrees(yaw_term)}")
         print(f"cte_term : {degrees(cte_term)}")
         print(f"-----index : {min_index}")
-        
+
         return max(min(steer, 27.0), -27.0)

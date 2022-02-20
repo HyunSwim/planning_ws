@@ -57,8 +57,8 @@ class Localization():
         rospy.Subscriber("/simul_gps", Pose, self.gps_call_back)
         rospy.Subscriber("/simul_imu", Pose, self.imu_call_back)
         
-        rospy.Subscriber('/ublox_gps/navpvt',NavPVT, self.gps_Heading)
-        rospy.Subscriber("/ublox_gps/fix", NavSatFix, self.gps_call_back)
+        rospy.Subscriber('/gps_data/navpvt',NavPVT, self.gps_Heading)
+        rospy.Subscriber("/gps_data/fix", NavSatFix, self.gps_call_back)
         rospy.Subscriber("/imu", Imu, self.imu_call_back)
 
 ##########KALMAN FILTER##############
@@ -70,7 +70,7 @@ class Localization():
                         [0,1]])
         
         # Noise (l)
-        q = Q_discrete_white_noise(dim=1, dt=0.1, var=0.001)
+        q = Q_discrete_white_noise(dim=2, dt=0.1, var=0.001)
         f.Q = block_diag(q, q)
 
         # Observe Matrix H
@@ -160,7 +160,7 @@ class Localization():
 
 
     def main(self):
-        self.msg.heading = self.yaw_filter
+        self.msg.heading = self.yaw_imu
         self.pub.publish(self.msg)
 
         self.vis_msg.pose.position.x = self.msg.x

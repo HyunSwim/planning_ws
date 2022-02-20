@@ -21,13 +21,13 @@ class Controller:
         self.control_msg = Control_Info()
 
         self.state = State()
-        self.global_path = read_global_path('songdo', 'parking')
+        self.global_path = read_global_path('songdo', 'merge')
         self.local_path = Path()
         
         self.update_state = stateUpdater(self.state)
         # self.update_local_path = pathUpdater(self.local_path)
 
-        self.state.target_speed = 20.0 #TODO: decided by mission or map
+        self.state.target_speed = 10.0 #TODO: decided by mission or map
         
         self.lat_controller= PurePursuit(self.state, self.global_path, self.local_path) 
         self.lon_controller = longitudinalController(self.state)
@@ -38,15 +38,15 @@ class Controller:
 
         else:
             self.publish_control_info(0, 0)
-            self.state.target_speed = 20.0
+            self.state.target_speed = 10.0
 
         print(self.control_msg)
         # velocity = self.state.target_speed, self.state.speed                                        ####speed graph
-        print("{0},{1}".format(self.state.target_speed,self.state.speed))
-        table = np.array([0,1])
-        route = np.asarray(self.state.target_speed, self.state.speed)  
-        table = np.append(table, route, axis=0)
-        np.savetxt("self_control_msg.csv", table, fmt='%f', delimiter=",") 
+        # print("{0},{1}".format(self.state.target_speed,self.state.speed))
+        # table = np.array([0,1])
+        # route = np.asarray(self.state.target_speed, self.state.speed)  
+        # table = np.append(table, route, axis=0)
+        # np.savetxt("self_control_msg.csv", table, fmt='%f', delimiter=",") 
 
     def publish_control_info(self, estop, gear):
             self.control_msg.emergency_stop = estop

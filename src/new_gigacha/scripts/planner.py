@@ -17,7 +17,7 @@ class Planner:
         rospy.init_node("Planner", anonymous=False)
         print(f"Planner: Initializing Planner...")
         self.ego = EgoVehicle()
-        self.ego.global_path = read_global_path('songdo', 'parking_simul')                      ###
+        self.ego.global_path = read_global_path('songdo', 'merge')                      ###
 
         self.sensor_hub = SensorHub(self.ego)
         self.path_planner = PathPlanner(self.ego)
